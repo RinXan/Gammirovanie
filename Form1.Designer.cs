@@ -1,6 +1,6 @@
 ﻿namespace Gammirovanie
 {
-    partial class Form1
+    partial class Gammirovanie
     {
         /// <summary>
         ///  Required designer variable.
@@ -183,7 +183,7 @@
             this.label5.TabIndex = 14;
             this.label5.Text = "Шифротекст";
             // 
-            // Form1
+            // Gammirovanie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -203,7 +203,7 @@
             this.Controls.Add(this.LangCheckbox);
             this.Controls.Add(this.DecryptButton);
             this.Controls.Add(this.EncryptButton);
-            this.Name = "Form1";
+            this.Name = "Gammirovanie";
             this.Text = "Гаммирование";
             this.ResumeLayout(false);
             this.PerformLayout();

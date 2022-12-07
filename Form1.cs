@@ -1,11 +1,11 @@
 namespace Gammirovanie
 {
-    public partial class Form1 : Form
+    public partial class Gammirovanie : Form
     {
         static readonly string cyrillic = "àáâãäå¸æçèéêëìíîïðñòóôõö÷øùúûüýþÿ0123456789";
         static readonly string latin = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-        public Form1()
+        public Gammirovanie()
         {
             InitializeComponent();
         }
@@ -16,15 +16,27 @@ namespace Gammirovanie
             {
                 string text = OpenTextBox.Text.ToLower();
                 string key = KeyTextBox.Text.ToLower();
+
                 bool generateKey = GenerateKeyÑheckBox.Checked;
                 bool lang = LangCheckbox.Checked;
 
-                if (generateKey) KeyTextBox.Clear();
+                string binKey = "";
 
                 CheckKey(key, generateKey, lang);
                 CheckText(text, lang);
 
-                string binKey = ChangeRepresentation(key, lang);
+                if (generateKey)
+                {
+                    KeyTextBox.Clear();
+                    binKey = GammaGenerator(text.Length, lang ? cyrillic.Length : latin.Length);
+                    key = ChangeRepresentation(binKey, lang, true);
+                    KeyTextBox.Clear();
+                }
+                else
+                {
+                    binKey = ChangeRepresentation(key, lang);
+                }
+
                 string binText = ChangeRepresentation(text, lang);
                 string cipheredBinText = XOR(binText, binKey);
                 string cipheredText = ChangeRepresentation(cipheredBinText, lang, true);
@@ -32,6 +44,7 @@ namespace Gammirovanie
                 BinKeyTextBox.Text = binKey;
                 BinOpenTextBox.Text = binText;
                 BinCipherTextBox.Text = cipheredBinText;
+                KeyTextBox.Text = key;
                 CipherTextBox.Text = cipheredText;
             }
             catch (Exception ex)
@@ -48,10 +61,11 @@ namespace Gammirovanie
             try
             {
                 bool lang = LangCheckbox.Checked;
+                bool generateKey = GenerateKeyÑheckBox.Checked;
                 string text = CipherTextBox.Text.ToLower();
                 string key = KeyTextBox.Text.ToLower();
 
-                CheckKey(key, lang: lang);
+                CheckKey(key, generateKey, lang);
                 CheckText(text, lang);
 
                 string binKey = BinKeyTextBox.Text.Length > 0 ? BinKeyTextBox.Text : ChangeRepresentation(key, lang);
@@ -137,6 +151,24 @@ namespace Gammirovanie
             return resultIndex;
         }
 
+        private static string GammaGenerator(int textLength, int alphabetLength)
+        {
+            Random rand = new Random();
+            string result = "";
+            int temp;
+
+            for (int i = 0; i < textLength; i++)
+            {
+                temp = rand.Next(alphabetLength);
+
+                result += DecimalToBinary(temp) + ' ';
+            }
+
+            MessageBox.Show("Êëþ÷ ñãåíåðèðîâàí.", "Óâåäîìëåíèå");
+
+            return result.Trim();
+        }
+
         private static string ChangeRepresentation(string text, bool lang, bool toDecimal = false)
         {
             string alphabet = lang ? cyrillic : latin;
@@ -168,8 +200,10 @@ namespace Gammirovanie
             return result.Trim();
         }
 
-        private static void CheckKey(string key, bool generate = true, bool lang = false)
+        private static void CheckKey(string key, bool generate, bool lang = false)
         {
+            if (generate) return;
+
             string alphabet;
 
             if (lang) alphabet = cyrillic;
